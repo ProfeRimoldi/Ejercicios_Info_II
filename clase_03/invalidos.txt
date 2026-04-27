@@ -1,0 +1,4 @@
+----martes, 14 de abril de 2026, 14:27:52 -03----
+Error: '3a144' no es un numero valido.
+----martes, 14 de abril de 2026, 14:29:39 -03----
+Error: '3a1b4' no es un numero valido.
