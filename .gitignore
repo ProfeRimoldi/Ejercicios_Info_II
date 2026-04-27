@@ -1,4 +1,4 @@
-/*# macOS
+# macOS
 .DS_Store
 
 # Archivos compilados C
@@ -9,7 +9,6 @@ a.out
 # Ejecutables sin extensión
 main
 programa
-ejercicio*
 
 # Archivos temporales
 *.swp
@@ -24,4 +23,3 @@ ejercicio*
 
 # Archivos de backup
 *~
-*/
