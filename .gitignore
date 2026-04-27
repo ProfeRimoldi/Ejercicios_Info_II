@@ -1,0 +1,26 @@
+# macOS
+.DS_Store
+
+# Archivos compilados C
+*.o
+*.out
+a.out
+
+# Ejecutables sin extensión
+main
+programa
+ejercicio*
+
+# Archivos temporales
+*.swp
+*.tmp
+*.log
+
+# VS Code
+.vscode/
+
+# CLion / JetBrains
+.idea/
+
+# Archivos de backup
+*~
