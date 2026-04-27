@@ -1,4 +1,4 @@
-# macOS
+/*# macOS
 .DS_Store
 
 # Archivos compilados C
@@ -24,3 +24,4 @@ ejercicio*
 
 # Archivos de backup
 *~
+*/
