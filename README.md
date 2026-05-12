@@ -10,3 +10,7 @@ Los ejercicios están organizados por clase:
 - `clase_04/`
 
 Cada carpeta contiene los códigos fuente y, cuando sea necesario, una breve explicación.
+
+Además, se incluirán carpetas dedicadas a Ejercitación por las clases prácticas. Tenemos:
+
+- `Ejercitacion_Archivos`
