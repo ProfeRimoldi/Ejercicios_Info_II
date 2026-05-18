@@ -1,8 +1,9 @@
 
 /*
-Realizar la lógica correcta para guardar la información del archivo “productos.dat”
-en un archivo de texto llamado “productos.txt” aplicando el concepto de escribir
-con formato, utilizando como separador de campo el carácter pipe (|).
+Realizar la lógica correcta para mostrar la información del archivo 
+“productos.txt”
+
+Modifico la conversion a texto para hacerlo mas formal y leer hasta los pipe |
 */
 #include<stdio.h>
 #include<string.h>
@@ -17,6 +18,7 @@ typedef struct punto2
     char descrip [50]; /* data */
 } Producto;
 
+void MostrarArchivoTexto (const char *nombreArchivo);
 void MostrarArchivo (const char *nombreArchivo);
 void modificarPrecioDeTodo (const char *nombreArchivo, float porc);
 void modificarPrecio(const char *nombreArchivo, char*descripcionBusqueda, float nuevoPrecio);
@@ -26,10 +28,11 @@ void MigrarATexto (const char *nombreBin, const char *nombreTxt);
 int main(){
     char buscar[50];
     float precioNuevo;
-    printf("Mostrando Estado inicial del Archivo Binario\n");
-    MostrarArchivo(ARCHIVO_BIN);
-    printf("\nExportando datos a productos.txt\n");
+    //printf("Mostrando Estado inicial del Archivo Binario\n");
+    //MostrarArchivo(ARCHIVO_BIN);
+    //printf("\nExportando datos a productos.txt\n");
     MigrarATexto(ARCHIVO_BIN, ARCHIVO_TXT);
+    MostrarArchivoTexto(ARCHIVO_TXT);
     
    /*
     printf("Ingrese la descripcion del producto a modificar: \n");
@@ -55,7 +58,7 @@ void MigrarATexto(const char *nombreBin, const char *nombreTxt){
     Producto p;
     int contador = 0;
     while (fread(&p, sizeof(Producto), 1, bin)==1){
-        fprintf(txt, "Codigo: %d\t| Precio: %.2f\t| Descripcio: %s\t\n", p.codigo, p.precio, p.descrip);
+        fprintf(txt, "%d|%.2f|%s\n", p.codigo, p.precio, p.descrip);
         contador ++;
     }
     printf("\nFinalizada la exportación de %d productos a '%s'\n", contador, nombreTxt);
@@ -115,3 +118,20 @@ void MostrarArchivo (const char *nombreArchivo){
     fclose(fp);
 }
 
+void MostrarArchivoTexto (const char *nombreArchivo){
+    FILE *fp = fopen(nombreArchivo, "r");
+    if (!fp){
+        perror("Error al abrir el archivo de texto\n");
+        return;
+    }
+    Producto p;
+    printf("\n===INFORMACION DEL ARCHIVO===\n");
+    // fscanf devuelve la cantidad de campos que pudo leer correctamente.
+    // Usamos [^|] para indicarle que lea la descripción hasta encontrarse con un pipe.
+    while (fscanf(fp, "%d|%f|%[^\n]\n", &p.codigo, &p.precio, p.descrip) == 3) {
+        // Mostramos los datos de manera prolija en la pantalla
+        printf("Codigo: %3d | Precio: $%7.2f | Descripcion: %-15s\n", p.codigo, p.precio, p.descrip);
+    }
+
+    fclose(fp);
+}

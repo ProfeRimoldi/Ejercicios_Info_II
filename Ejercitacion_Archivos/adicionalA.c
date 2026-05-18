@@ -1,14 +1,14 @@
-
 /*
-Realizar la lógica correcta para guardar la información del archivo “productos.dat”
-en un archivo de texto llamado “productos.txt” aplicando el concepto de escribir
-con formato, utilizando como separador de campo el carácter pipe (|).
+Crear una función que ordene el archivo “productos.dat” por precio de menor 
+a mayor y los guarde en “porPrecio.dat” y los muestre en pantalla.
 */
+
 #include<stdio.h>
 #include<string.h>
 
 #define ARCHIVO_BIN "productos.dat"
 #define ARCHIVO_TXT "productos.txt"
+#define ARCHIVO_ORDENADO "porPrecio.dat"
 
 typedef struct punto2
 {
@@ -17,7 +17,8 @@ typedef struct punto2
     char descrip [50]; /* data */
 } Producto;
 
-void MostrarArchivo (const char *nombreArchivo);
+void OrdenarPorPrecio(const char *archivoOrigen, const char *archivoDestino);
+void MostrarArchivo(const char *nombreArchivo);
 void modificarPrecioDeTodo (const char *nombreArchivo, float porc);
 void modificarPrecio(const char *nombreArchivo, char*descripcionBusqueda, float nuevoPrecio);
 void MigrarATexto (const char *nombreBin, const char *nombreTxt);
@@ -27,9 +28,11 @@ int main(){
     char buscar[50];
     float precioNuevo;
     printf("Mostrando Estado inicial del Archivo Binario\n");
-    MostrarArchivo(ARCHIVO_BIN);
+    //MostrarArchivo(ARCHIVO_BIN);
     printf("\nExportando datos a productos.txt\n");
     MigrarATexto(ARCHIVO_BIN, ARCHIVO_TXT);
+    printf("\nOrdenando archivo por precio...\n");
+    OrdenarPorPrecio(ARCHIVO_BIN, ARCHIVO_ORDENADO);
     
    /*
     printf("Ingrese la descripcion del producto a modificar: \n");
@@ -103,7 +106,7 @@ void modificarPrecioDeTodo (const char *nombreArchivo, float porc){
     fclose(fp);
 }
 void MostrarArchivo (const char *nombreArchivo){
-    FILE *fp = fopen(nombreArchivo, "r+");
+    FILE *fp = fopen(nombreArchivo, "rb");
     if (!fp){
         perror("Error al abrir el archivo");
         return;
@@ -114,4 +117,54 @@ void MostrarArchivo (const char *nombreArchivo){
     }
     fclose(fp);
 }
+ void OrdenarPorPrecio(const char *archivoOrigen, const char *archivoDestino){
+    FILE *entrada = fopen(archivoOrigen, "rb");
+    if(!entrada){
+        perror("Error al abrir el archivo de origen");
+        return;
+    }
+    
+    Producto productos[10];
+    int i = 0;
+    
+    // Leemos de a 1 registro por vez de forma limpia
+    while (i < 10 && fread(&productos[i], sizeof(Producto), 1, entrada) == 1){
+        i++; // Avanzamos el índice SOLO si la lectura fue exitosa
+    }
+    int cant = i; // cant va a valer exactamente 10 si el archivo tiene 10 elementos
+    fclose(entrada);
+    
+    // Si no leyó nada, salimos para evitar romper la burbuja
+    if (cant == 0) {
+        printf("El archivo de origen estaba vacío.\n");
+        return;
+    }
 
+    Producto aux;
+    // Algoritmo de Burbuja corregido
+    for(int j = 0; j < cant - 1; j++){
+        for (int k = 0; k < cant - 1 - j; k++){
+            if(productos[k].precio > productos[k+1].precio){
+                // Intercambio completo de la estructura
+                aux = productos[k];
+                productos[k] = productos[k+1];
+                productos[k+1] = aux;
+            }
+        }
+    }
+
+    // Creamos el nuevo archivo binario desde cero ("wb")
+    FILE *salida = fopen(archivoDestino, "wb");
+    if (!salida) {
+        perror("Error al crear el archivo de destino");
+        return;
+    }
+    
+    // Escribimos exactamente la cantidad de elementos reales que leímos
+    fwrite(productos, sizeof(Producto), cant, salida);
+    fclose(salida);
+
+    // Mostramos en pantalla el resultado leyendo el archivo recién creado
+    printf("\n=== ARCHIVO ORDENADO POR PRECIO MENOR A MAYOR (%s) ===\n", archivoDestino);
+    MostrarArchivo(archivoDestino);
+}
